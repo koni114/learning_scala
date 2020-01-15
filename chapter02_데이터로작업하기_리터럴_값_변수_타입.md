@@ -173,7 +173,7 @@ amount = amountText.toDouble
 ### 스칼라 타입 개요
 * 모든 스칼라 타입은 숫자에서 문자열 그리고 컬렉션에 이르기까지 타입 계층구조의 일부로 존재
 * 다음은 스칼라 핵심 타입의 계층 구조를 나타냄
-![img](C:/러닝스칼라/ScalaTypeHierarchy.png)
+![img](https://github.com/koni114/learning_scala/blob/master/ScalaTypeHierarchy.png)
 * Any, AnyVal, AnyRef 타입은 스칼라 타입 계층구조의 루트
 * AnyVal
   * AnyVal을 확장한 타입은 데이터를 표현하는데 사용하는 핵심 값들이기 때문에 값 타입(value type)이라고 함
