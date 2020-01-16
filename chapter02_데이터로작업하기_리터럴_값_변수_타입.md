@@ -154,8 +154,8 @@ s"Fish n chips n vineger, ${"pepper "*3}salt "
 > |이름| 예시 | 설명 |
 > |---|:---:|:---:|
 >  | matches |"Froggy went a' courting" matches ".*courting"| 정규 표현식이 전체 문자열과 맞으면 참(True)을 반환|
->  | replaceAll |"milk, tea, muck" replaceAll ("m[^ ]+k)", "coffee"| 일치하는 문자열을 모두 치환 텍스트로 치환함|
->  | replaceFirst |"milk, tea, muck" replaceFirst ("m[^ ]+k)", "coffee"| 첫 번째로 일치하는 텍스트를 치환|
+>  | replaceAll |"milk, tea, muck" replaceAll ("m[^ ]+k", "coffee")| 일치하는 문자열을 모두 치환 텍스트로 치환함|
+>  | replaceFirst |"milk, tea, muck" replaceFirst ("m[^ ]+k", "coffee")| 첫 번째로 일치하는 텍스트를 치환|
 
 * 다음과 같이 r 연산자를 이용해서 고급 처리가 가능
 ~~~
