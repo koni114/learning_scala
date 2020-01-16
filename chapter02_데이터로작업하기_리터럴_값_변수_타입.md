@@ -76,9 +76,9 @@ x = 'whats up' (error)
   *  '' 로 둘러싸는 경우
 ~~~
 val π = 3.14159
-val $ = 'USD currency symbol'
+val $ = "USD currency symbol"
 val o_O = 'Hmm'
-val 50cent = '%0.50' (error, 숫자로 시작 안됨)
+val 50cent = "%0.50" (error, 숫자로 시작 안됨)
 val a.b = 25(error, 마침표는 연산자 기호가 아님)
 val 'a.b' = 25(잘안씀)
 ~~~
@@ -125,7 +125,7 @@ val i: Int = l.toInt
 * 기본적인 문자열과 같음
 * 파이썬처럼 문자열에 연산기호 사용이 가능
 ~~~
-val hello = 'Hello, There'
+val hello = "Hello, There"
 val greeting = 'Hello,' + "World"
 val matched = (greeting == 'Hello, World')
 val theme = "Na " * 16 + "Batman"    
