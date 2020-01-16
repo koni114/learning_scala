@@ -57,7 +57,7 @@ val x: Int = "Hello" (error)
 * 임시 데이터 저장, 루프 내 값을 누산하는 로컬 변수와 같은 경우는 변수 사용함
 * var 키워드 사용
 ~~~
-val <식별자>[: <타입>] = <데이터>
+var <식별자>[: <타입>] = <데이터>
 ~~~
 * 변수도 마찬가지로 타입 생략 가능
 * 재할당시 다른 타입 데이터를 재할당 할 수 없음
@@ -143,7 +143,7 @@ println(s"Pi, using 335/113, is about $approx.")
 ~~~
 * 중괄호를 이용해서 포현 가능
 ~~~
-val item = 'apple'
+val item = "apple"
 s"How do you like them ${item}s?"
 s"Fish n chips n vineger, ${"pepper "*3}salt "
 ~~~
