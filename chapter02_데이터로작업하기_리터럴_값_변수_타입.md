@@ -126,7 +126,7 @@ val i: Int = l.toInt
 * 파이썬처럼 문자열에 연산기호 사용이 가능
 ~~~
 val hello = "Hello, There"
-val greeting = 'Hello,' + "World"
+val greeting = "Hello," + "World"
 val matched = (greeting == 'Hello, World')
 val theme = "Na " * 16 + "Batman"    
 ~~~
