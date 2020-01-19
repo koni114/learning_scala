@@ -166,7 +166,7 @@ val <정규 표현식 값>(<식별자>) = <입력 문자열>
 * 문자열에서 숫자형 값을 캡처해보자(여기서의 캡처는 추출해보자는 얘기)
 ~~~
 val input = "Enjoying this apple 3.14159 times today"
-val pattern = """ .* apple ([\d.]+) times .*""".r
+val pattern = """.* apple ([\d.]+) times .*""".r
 val pattern(amountText) = input
 val amount = amountText.toDouble
 ~~~
