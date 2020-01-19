@@ -168,7 +168,7 @@ val <정규 표현식 값>(<식별자>) = <입력 문자열>
 val input = "Enjoying this apple 3.14159 times today"
 val pattern = """ .* apple ([\d.]+) times .*""".r
 val pattern(amountText) = input
-amount = amountText.toDouble
+val amount = amountText.toDouble
 ~~~
 ### 스칼라 타입 개요
 * 모든 스칼라 타입은 숫자에서 문자열 그리고 컬렉션에 이르기까지 타입 계층구조의 일부로 존재
