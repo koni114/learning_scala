@@ -62,7 +62,7 @@ val amount = myDouble(20)
 * 와일드카드 연산자로도 사용 가능
 ~~~
 def max(a: Int, b: Int) = if(a >  b) a else b
-val maximize = (Int, Int) => Int = max
+val maximize: (Int, Int) => Int = max
 maximize(50, 30)
 
 // 와일드카드 연산자 사용 가능
