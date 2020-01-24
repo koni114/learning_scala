@@ -58,7 +58,7 @@ def double(x: Int): Int = x * 2
 val myDouble = double _
 val amount = myDouble(20)
 ~~~
-* 다중 매개변수를 사용하는 명시적 함수 타입으로 정의된 함숫값의 예는 다음과 같음\
+* 다중 매개변수를 사용하는 명시적 함수 타입으로 정의된 함숫값의 예는 다음과 같음
 * 와일드카드 연산자로도 사용 가능
 ~~~
 def max(a: Int, b: Int) = if(a >  b) a else b
