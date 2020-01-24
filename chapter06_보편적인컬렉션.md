@@ -12,7 +12,7 @@ println(s"I have ${colors.size} colors: $colors")
 * 스칼라는 시작 인덱스는 0
 * head()와 tail() 메소드를 사용하여 list에 접근 할 수 있음
 ~~~
-val colors List("red", "green", "blue")
+val colors = List("red", "green", "blue")
 println(colors.head)
 println(colors.tail)
 colors(1)
