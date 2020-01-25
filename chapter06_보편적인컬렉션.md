@@ -237,7 +237,7 @@ val answer = reduceOp(List(11.3, 23.5, 7.2), 0.0)(_ + _)
 ~~~
 * 스칼라의 컬렉션은 reduceOp와 유사한 내장 연산을 제공하고 있음
 
-![img](C:/러닝스칼라/learning_scala.JPG)
+![img](https://github.com/koni114/learning_scala/blob/master/learning_scala.jpg)
 * fold, reduce, scan은 모두 리스트 요소와 동일한 타입의 값을 반환해야 하는 한편,  
 각 연산의 오른쪽/왼쪽 변형 함수들은 고유의 반환 타입을 지원함
 * 다른 주요 차이점은 순서에 있음  
