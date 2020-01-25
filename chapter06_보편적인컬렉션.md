@@ -172,7 +172,7 @@ print(s)
 > |이름| 예제 | 설명 |
 > |---|:---:|:---:|
 >  | collect | List(0, 1, 0) collect {case 1 => "ok"} | 각 요소를 부분 함수를 사용하여 변환하고, 해당 함수를 적용할 수 있는 요소를 유지함|
->  | flatMap |List(1, 2) flatMap (_.split(','))| 주어진 함수를 이용하여 각 요소를 변환하고, 그 결과 리스트를 이 리스트에 평면화함|
+>  | flatMap |List("milk, tea") flatMap (_.split(','))| 주어진 함수를 이용하여 각 요소를 변환하고, 그 결과 리스트를 이 리스트에 평면화함|
 >  | map |List("milk", "tea") map (_.toUpperCase)| 주어진 함수를 이용하여 각 요소를 반환|
 
 ~~~
