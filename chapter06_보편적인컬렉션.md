@@ -223,7 +223,7 @@ val included = boolReduce(List(45, 11, 13), false) {
 '일반화' 할 수 있음
 * 이를 통해 sum, max 등 다른 수학적 연산을 구할 수 있음
 ~~~
-def reduceOp[A, B])(l: List[A], start: B)(f: (B, A) => B): B = {
+def reduceOp[A, B](l: List[A], start: B)(f: (B, A) => B): B = {
   var a = start
   for (i <- l ) a = f(a, i)
   a
