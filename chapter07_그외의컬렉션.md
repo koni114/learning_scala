@@ -364,11 +364,84 @@ println("waiting")
 * 퓨처의 작업이 완료될 때 실행할 콜백 함수 또는 추가적인 퓨처를 설정할 수 있음
 ex) API 호출은 호출자에게 제어권을 넘겨주는 동안 백그라운드에서 중요하지만 시간이 오래걸리는 작업을 시작 할 수 있음
 ex) 네트워크 파일 전송과 같은 비동기적인 이벤트는 퓨처에서 시작할 수 있으며, 작업이 완료될 때까지 또는 시간제한에 도달할 때 까지 main thread가 잠들어 있을 수 있음
-* 퓨처는 동기식, 비동기식 모두 작업이 가능
+* 퓨처는 비동기, 동기 모두 관리 가능
+* 비동기식 작업이 더 효율적이기 때문에 백그라운드 스레드와 현행 스레드 모두 계속해서 실행하는 것에 대해 먼저 살펴보도록 하겠음
 
 #### 비동기식으로 퓨처 처리하기
 * 퓨처가 완료된 다음 실행될 함수 또는 퓨처에 첫 번째 퓨처의 성공적인 결과값을 전달하여 연결 할 수 있음
 * 이 방식으로 처리된 퓨처는 결국 그 함수의 반환값 또는 예외를 포함한 util.Try를 반환
-* 성공과 실패시 Option이나 Try와 같은 로직으로 반환
+* 성공했다면, 연결된 함수에 전달되거나 반환값으로 전달됨
+* 실패했다면, 예외를 발생시키면서 추가적인 함수나 퓨처는 실행되지 않음
 
-##### 
+* 퓨처의 최종 결과를 받기 위해 콜백 함수를 지정할 수 있음  
+콜백 함수는 최종 성공적인 값 또는 예외를 받아 그 퓨처를 생성했던 원래 코드를 해제하여 다른 작업으로 넘어갈 수 있도록 해줌
+
+##### 실제 테스트 케이스르 제공하는 함수 생성 예제
+* 잠들어 있다가 값을 반환하거나 예외를 발생시키는 함수
+~~~
+import concurrent.ExecutionContext.Implicits.global
+import concurrent.Future
+
+def nextFtr(i: Int = 0) = Future {
+  def rand(x: Int) = util.Random.nextInt(x)
+
+  Thread.sleep(rand(5000)) // 실제로는 효율이 떨어지므로, 사용을 지양하자
+  if (rand(3) > 0) (i + 1) else throw new Exception
+}
+~~~
+
+> | 이름 | 예제 | 설명|
+> |---|:---:|:---:|
+>  | fallbackTo | nextFtr(1) fallbackTo nextFtr(2) | 두 번째 퓨처를 첫 번째에 연결하고 새로운 종합적인 퓨처를 반환. 첫 번째 퓨처가 성공적이지 않다면, 두 번째 퓨처가 호출 됨|
+> |flatMap | nextFtr(1).flatMap(int => nextFtr())|두 번째 퓨처를 첫 번째에 연결하고 새로운 종합적인 퓨처를 반환함. 첫 번째가 성공적이라면 그 반환값이 두 번째를 호출하는 사용됨|
+> |map|nextFtr(1) map (_  * 2 )| 주어진 함수를 퓨처에 연결하고 새로운 종합적인 퓨처를 반환함. 퓨처가 성공적이라면 그 반환값이 해당 함수를 호출할 때 사용됨 |
+> |onComplete| nextFtr() onComplete { _ getOrElse 0 }| 퓨처의 작업이 완료된 후 주어진 함수가 값 또는 예외를 포함한 util.Try를 이용하여 호출됨 |
+> |Future.sequence | concurrent.Future sequence List(nextFtr(1), nextFtr(5))| 주어진 시퀀스에서 퓨처를 병행으로 실행하여 새로운 퓨처를 반환. 시퀀스 내에 모든 퓨처가 성공하면 이들의 반환값으로 리스트가 반환됨. 그렇지 않으면 그 시퀀스 내에서 처음으로 발생한 예외가 반환됨 |
+
+* 지금까지는 퓨처를 어떻게 생성하고 관리하는지를 보는 예제들이였음. 좀 더 퓨처를 유용하게 사용하려면 생성, 관리 외에도 추출이 가능해야 함
+* 퓨처의 좀 더 현실적인 예제를 통해 퓨처로 작업하는 방법을 처음부터 끝까지 알아보도록 하자
+
+##### OpenWeatherMap API로부터 일기예보를 읽어와 처리하는 예제
+* URL로부터 내용을 읽어오기 위한 스칼라 라이브러리 연산 사용  
+io.Source.+fromURL(url: String) 사용
+* 일기예보 데이터를 가져올 URL
+http://api.openweathermap.org/data/2.5/forecast?mode=xml&lat=55&lon=0&APPID={APIKEY}
+* OpenWeatherMap 은 API 접근을 위해 별도 API KEY 필요  
+https://home.openweathermap.org/api_keys 에서 확인 가능
+* 두 도시의 현재 온도를 확인하고 어느 도시가 더 따뜻한지 확인
+* 원격 API를 호출하는 것은 시간-집약적인 작업이 될 수 있으므로 병행식 퓨처로 API 호출하여  
+메인(main) 스레드와 동시에 실행할 예정
+~~~
+import concurrent.Future
+def cityTemp(name: String): Double = {
+  val url = "http://api.openweathermap.org/data/2.5/weather"
+  val cityUrl = s"$url?&APPID=APIID입력&q=$name"
+  val json = io.Source.fromURL(cityUrl).mkString.trim
+  val pattern = """.*"temp":([\d.]+).*""".r
+  val pattern(temp) = json
+  temp.toDouble
+}
+
+val cityTemps = Future sequence Seq(
+  Future(cityTemp("Fresno")), Future(cityTemp("Tempe"))
+  )
+
+cityTemps onSuccess {
+  case Seq(x,y) if x > y => println(s"Fresno is warmer: $x K")
+  case Seq(x,y) if x < y => println(s"Tempe is warmer: $y K")
+}
+~~~
+
+#### 동기식으로 퓨처 처리하기
+* 백그라운드 스레드가 완료되기를 기다리는 동안 스레드를 차단하는 것은 자원이 많이 소모되는 작업
+* 트래픽 양이 많거나 높은 성능을 요구하는 어플리케이션이라면 이 방식을 피하고 onComplete나 onSuccess 같은 콜백 함수를 사용하는 것이 좋음
+* 하지만 현행 스레드를 차단하고, 백그라운드 스레드가 성공적으로 또는 그렇지 않더라도 완료되기를 기다려야 할 때가 있음
+
+#### 요약
+* 스칼라의 가변적인 컬렉션은 두 가지 상이한 장점을 가지고 있음
+  * 버퍼, 빌더 또는 다른 방식들을 사용하여 한 번에 하나의 항목씩 컬렉션을 확장하는 증분 버퍼로 사용될 수 있다
+  * 불변의 컬렉션이 사용할 수 있는 다양한 종류의 연산을 지원하기도 함
+* 스칼라에서의 컬렉션은 애플리케이션 데이터의 단순한 컨테이너 이상임
+  * 모나딕 컬렉션은 누락된 데이터, 에러 상황, 동시 처리와 같이 민감하고 복잡한 상황에 대비하여 타입에 안전하며 연결 가능한 연산과 관리 기능을 제공
+* 스칼라에서 불변 컬렉션, 가변 컬렉션, 모나딕 컬렉션은 안전하고 표현력 있는 소프트웨어 개발에 있어서 없어서는 안 될 기반 구성 요소
+* 
