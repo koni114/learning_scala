@@ -36,7 +36,7 @@ println(u.greet)
 * 여기서 추가적으로 name을 매개변수로 값을 받아보자
 ~~~
 class User(n:String) {
-  val name: String = n
+  val name: String  = n
   def greet: String = s"Hello from $name"
   override def toString = s"User($name)"
 }
